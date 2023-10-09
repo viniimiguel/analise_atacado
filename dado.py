@@ -27,7 +27,6 @@ class Atacadao():
         self.raspa()
         sleep(3)
         self.cria_planilhas()
-        sleep(12312312)
 
     def abre(self):
         self.driver.get(self.site_link)
