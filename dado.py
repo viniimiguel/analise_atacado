@@ -28,6 +28,8 @@ class Atacadao():
         self.abre()
         sleep(1)
         self.cep()
+        sleep(3)
+        self.raspa()
         sleep(12312312)
 
     def abre(self):
@@ -53,11 +55,39 @@ class Atacadao():
         actions.send_keys(Keys.PAGE_DOWN).perform()
 
     def raspa(self):
-        pass
+        global armazena_nome,armazena_preco
+        armazena_nome = []
+        armazena_preco = []
+        contador = 1
+        while True:
+            try:
+                scraping = {
+                    'XP':{
+                        'nome': f'/html/body/main/section[3]/div[1]/div[2]/div[2]/div[4]/div/div[{contador}]/a/h2',
+                        'preco': f'/html/body/main/section[3]/div[1]/div[2]/div[2]/div[4]/div/div[{contador}]/a/div[3]',
+                    }
+                }
+                
+                nome = self.driver.find_element(By.XPATH, scraping['XP']['nome'])
+                preco = self.driver.find_element(By.XPATH, scraping['XP']['preco'])
+                nome_text = nome.text
+                preco_text = preco.text
 
-    
+                self.driver.execute_script('arguments[0].scrollIntoView();', nome)
 
+                print(nome_text)
+                print(preco_text)
 
+                contador +=1
+                print(contador)
+                sleep(1)
+
+            except NoSuchElementException:
+                print('nao tem mais elementos na pagina')
+                break
+
+            except Exception as e:
+                print(f'error {e}')
 
 atacadao = Atacadao()
 atacadao.main()
