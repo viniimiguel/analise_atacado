@@ -5,11 +5,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 import openpyxl
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
 
 
 class Atacadao():
@@ -30,6 +25,8 @@ class Atacadao():
         self.cep()
         sleep(3)
         self.raspa()
+        sleep(3)
+        self.cria_planilhas()
         sleep(12312312)
 
     def abre(self):
@@ -64,7 +61,7 @@ class Atacadao():
                 scraping = {
                     'XP':{
                         'nome': f'/html/body/main/section[3]/div[1]/div[2]/div[2]/div[4]/div/div[{contador}]/a/h2',
-                        'preco': f'/html/body/main/section[3]/div[1]/div[2]/div[2]/div[4]/div/div[{contador}]/a/div[3]',
+                        'preco': f'/html/body/main/section[3]/div[1]/div[2]/div[2]/div[4]/div/div[{contador}]/a/div[3]/span[1]',
                     }
                 }
                 
@@ -73,6 +70,9 @@ class Atacadao():
                 nome_text = nome.text
                 preco_text = preco.text
 
+                armazena_nome.append(nome_text)
+                armazena_preco.append(preco_text)
+
                 self.driver.execute_script('arguments[0].scrollIntoView();', nome)
 
                 print(nome_text)
@@ -80,7 +80,7 @@ class Atacadao():
 
                 contador +=1
                 print(contador)
-                sleep(1)
+                sleep(0.5)   
 
             except NoSuchElementException:
                 print('nao tem mais elementos na pagina')
@@ -88,6 +88,20 @@ class Atacadao():
 
             except Exception as e:
                 print(f'error {e}')
+        
+    def cria_planilhas(self):
+        planilha = openpyxl.Workbook()
+        atacado = planilha.active
+        atacado.title = 'mercearia'
+        atacado['A1'] = 'Nome'
+        atacado['B1'] = 'Preco'
+
+        for index, (nome, preco) in enumerate(zip(armazena_nome, armazena_preco), start=2):
+            atacado.cell(column=1, row=index, value=nome)
+            atacado.cell(column=2, row=index, value=preco)
+
+        planilha.save('planilha_de_precos_atacadao.xlsx')
+        print('planilha salva com sucesso!')
 
 atacadao = Atacadao()
 atacadao.main()
