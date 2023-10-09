@@ -1,13 +1,15 @@
 from selenium import webdriver
 from time import sleep
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException
 import openpyxl
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
-from selenium.common.exceptions import NoSuchElementException
 
 
 class Atacadao():
@@ -33,12 +35,26 @@ class Atacadao():
         self.driver.maximize_window()
 
     def cep(self):
-        cidade = self.driver.find_element(By.XPATH, self.site_map['XP']['cep'])
-        sleep(1)
-        cidade.send_keys(self.cidade)
-        sleep(3)
-        self.driver.find_element(By.XPATH, self.site_map['XP']['confirmar']).click()
-        sleep(5)
+        try:
+            cidade = self.driver.find_element(By.XPATH, self.site_map['XP']['cep'])
+            sleep(1)
+            cidade.send_keys(self.cidade)
+            sleep(3)
+            self.driver.find_element(By.XPATH, self.site_map['XP']['confirmar']).click()
+            sleep(5)
+        except NoSuchElementException:
+            print('elementto nao  encontrado tentando novamente...')
+            self.cep()
+        except Exception as e:
+            print(f'error {e}')
+
+    def desce(self):
+        actions = ActionChains(self.driver)
+        actions.send_keys(Keys.PAGE_DOWN).perform()
+
+    def raspa(self):
+        pass
+
     
 
 
