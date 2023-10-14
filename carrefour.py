@@ -14,7 +14,7 @@ class Carrefour():
         self.site_map = {
             'XP':{
                 'cep': 'zipcode',
-                'buscar': '//*[@id="headlessui-tabs-panel-:r2h:"]/div/form/button'
+                'buscar': '/html/body/div[5]/div/div/div/div[2]/div/section/div/div[2]/div/div/form/button'
             }
         }
         self.cep = '55660000'
