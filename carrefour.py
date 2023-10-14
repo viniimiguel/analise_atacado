@@ -18,6 +18,7 @@ class Carrefour():
             }
         }
         self.cep = '55660000'
+        self.actions = ActionChains(self.driver)
 
     def main(self):
         self.abre()
@@ -34,38 +35,39 @@ class Carrefour():
     
     def cidade(self):
         try:
-            actions = ActionChains(self.driver)
-            actions.send_keys('\n').perform()
+            self.actions.send_keys('\n').perform()
             sleep(3)
             self.driver.find_element(By.NAME, self.site_map['XP']['cep']).click()
             sleep(3)
             ce = self.driver.find_element(By.NAME, self.site_map['XP']['cep'])
             ce.send_keys('55660000')
             sleep(3)
-            self.driver.find_element(By.XPATH, self.site_map['XP']['buscar']).click()
+            busc = self.driver.find_element(By.XPATH, self.site_map['XP']['buscar'])
+            busc.click()
 
 
         except NoSuchElementException:
-            print('elemento nao encontrado!')
-
+            print('nao tem mais elementos na tela')
         except Exception as e:
             print(f'error as {e}')
-    def down(self):
-        actions = ActionChains(self.driver)
-        actions.send_keys(Keys.PAGE_DOWN)
+ 
 
     def raspagem(self):
         global armazena_nome, armazena_preco
         contador = 1
         armazena_nome = []
         armazena_preco = []
+        def down():
+            for i in range(0, 1):
+                self.actions.send_keys(Keys.PAGE_DOWN).perform()
+                sleep(1)
+        down()
         while True:
-            self.down()
             my_dict = {
                 'XP':{
                     'nome': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[1]/ul/li[{contador}]/article/div[1]/section/div[2]/h3/span/a',
                     'preco': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[1]/ul/li[{contador}]/article/div[1]/section/div[4]',
-                    'passa': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[2]/div[1]/div/div[6]/a/button',
+                    'passa': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[2]/div[1]/div/div[7]/a/button',
                                 
                             
                 }
@@ -76,6 +78,8 @@ class Carrefour():
 
                 nome_text = nome.text
                 preco_text = preco.text
+
+                self.driver.execute_script('arguments[0].scrollIntoView();', nome)
 
                 print(nome_text)
                 print(preco_text)
@@ -89,8 +93,11 @@ class Carrefour():
                 print('nao tem mais elementos na tela')
                 try:
                     self.driver.find_element(By.XPATH, my_dict['XP']['passa']).click()
+                    self.actions.send_keys(Keys.HOME).perform()
+                    down()
 
                 except NoSuchElementException:
+                    print('nao tem mais paginas para percorrer!')
                     break
                 except Exception as e:
                     print(f'error {e}')
