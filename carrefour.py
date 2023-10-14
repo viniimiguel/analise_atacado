@@ -21,7 +21,10 @@ class Carrefour():
 
     def main(self):
         self.abre()
+        sleep(2)
         self.cidade()
+        sleep(2)
+        self.raspagem()
         sleep(123123123)
 
     def abre(self):
@@ -46,6 +49,39 @@ class Carrefour():
 
         except Exception as e:
             print(f'error as {e}')
+    
+    def raspagem(self):
+        global armazena_nome, armazena_preco
+        contador = 1
+        armazena_nome = []
+        armazena_preco = []
+        while True:
+            my_dict = {
+                'XP':{
+                    'nome': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[1]/ul/li[{contador}]/article/div[1]/section/div[2]/h3/span/a',
+                    'preco': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[1]/ul/li[{contador}]/article/div[1]/section/div[4]'
+                            
+                }
+            }
+            try:
+                nome = self.driver.find_element(By.XPATH, my_dict['XP']['nome'])
+                preco = self.driver.find_element(By.XPATH, my_dict['XP']['preco'])
+
+                nome_text = nome.text
+                preco_text = preco.text
+
+                print(nome_text)
+                print(preco_text)
+                print(contador)
+                
+                contador += 1
+
+
+            except NoSuchElementException:
+                pass
+            
+            except Exception as e:
+                print(f'error {e}')
 
    
      
