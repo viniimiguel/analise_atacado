@@ -46,10 +46,6 @@ class Atacadao():
         except Exception as e:
             print(f'error {e}')
 
-    def desce(self):
-        actions = ActionChains(self.driver)
-        actions.send_keys(Keys.PAGE_DOWN).perform()
-
     def raspa(self):
         global armazena_nome,armazena_preco
         armazena_nome = []
