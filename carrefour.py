@@ -38,6 +38,7 @@ class Carrefour():
             actions.send_keys('\n').perform()
             sleep(3)
             self.driver.find_element(By.NAME, self.site_map['XP']['cep']).click()
+            sleep(3)
             ce = self.driver.find_element(By.NAME, self.site_map['XP']['cep'])
             ce.send_keys('55660000')
             sleep(3)
@@ -49,17 +50,23 @@ class Carrefour():
 
         except Exception as e:
             print(f'error as {e}')
-    
+    def down(self):
+        actions = ActionChains(self.driver)
+        actions.send_keys(Keys.PAGE_DOWN)
+
     def raspagem(self):
         global armazena_nome, armazena_preco
         contador = 1
         armazena_nome = []
         armazena_preco = []
         while True:
+            self.down()
             my_dict = {
                 'XP':{
                     'nome': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[1]/ul/li[{contador}]/article/div[1]/section/div[2]/h3/span/a',
-                    'preco': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[1]/ul/li[{contador}]/article/div[1]/section/div[4]'
+                    'preco': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[1]/ul/li[{contador}]/article/div[1]/section/div[4]',
+                    'passa': f'/html/body/div[2]/main/section[2]/div[2]/div[2]/div[5]/div[2]/div[1]/div/div[6]/a/button',
+                                
                             
                 }
             }
@@ -76,9 +83,17 @@ class Carrefour():
                 
                 contador += 1
 
+                sleep(1)
 
             except NoSuchElementException:
-                pass
+                print('nao tem mais elementos na tela')
+                try:
+                    self.driver.find_element(By.XPATH, my_dict['XP']['passa']).click()
+
+                except NoSuchElementException:
+                    break
+                except Exception as e:
+                    print(f'error {e}')
             
             except Exception as e:
                 print(f'error {e}')
