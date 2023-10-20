@@ -1,4 +1,4 @@
-# analise_atacado
+# analise_atacado <img align="center" alt="html5" src="https://img.shields.io/badge/Python-14354C?style=for-the-badge&logo=python&logoColor=white"/> <img align="center" alt="html5" src="https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white"/>
 
 ## Web scraping realizado em um site atacadista para a extração de dados de todos os itens disponíveis no site.
 
